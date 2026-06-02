@@ -6,7 +6,7 @@ This repository contains everything needed to generate a realistic pharmaceutica
 
 ---
 
-## 🏗️ Project Architecture & Data Flow
+## Project Architecture & Data Flow
 
 ```mermaid
 graph TD
@@ -25,7 +25,7 @@ graph TD
 
 ---
 
-## 🛠️ Tech Stack & Key Libraries
+## Tech Stack & Key Libraries
 
 - **Programming Language**: Python 3.8+
 - **Data Manipulation**: Pandas
@@ -37,7 +37,7 @@ graph TD
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 Pharma-Sales-Analytics-Dashboard/
@@ -55,7 +55,7 @@ Pharma-Sales-Analytics-Dashboard/
 
 ---
 
-## 🚀 Step-by-Step Setup Instructions
+## Step-by-Step Setup Instructions
 
 ### Step 1: Install PostgreSQL
 Ensure PostgreSQL is installed and running on your local machine.
@@ -131,7 +131,7 @@ The application will automatically open in a new tab in your default browser (us
 
 ---
 
-## 💡 Analytical Dashboard Features
+## Analytical Dashboard Features
 
 1. **Executive Overview Tab**:
    - **Custom KPI Cards**: Displays *Total Revenue*, *Total Units Sold*, *Top Performing Product*, and *Top Region* with beautiful, glassmorphic styling and hover animations.
@@ -148,3 +148,54 @@ The application will automatically open in a new tab in your default browser (us
 5. **SQL Learning Console**:
    - A playground where you can select preset queries (e.g., Seasonal trends, wholesale order sizing) to read their explanation and run them directly against PostgreSQL.
    - Includes a **Custom SQL Editor** where users can write their own read-only `SELECT` queries to query the database tables live.
+
+---
+
+## Cloud Deployment (Free Setup)
+
+To share this working interactive dashboard with others publicly, you can deploy it for free using **Neon PostgreSQL** (Database) and **Streamlit Community Cloud** (Frontend Web Server).
+
+### 1. Setup Hosted Database (Neon)
+1. Register for a free account at [Neon.tech](https://neon.tech/).
+2. Create a new project. You will receive a database connection string like:
+   `postgresql://neondb_owner:YOUR_PASSWORD@ep-your-db-host.neon.tech/neondb?sslmode=require`
+
+### 2. Seed Your Cloud Database
+1. Update your local `.env` file with the Neon credentials:
+   ```env
+   DB_HOST=ep-your-db-host.neon.tech
+   DB_PORT=5432
+   DB_USER=neondb_owner
+   DB_PASSWORD=YOUR_PASSWORD
+   DB_NAME=neondb
+   ```
+2. Run the ingestion loader locally to initialize schema and upload the 50,000 records to the cloud database:
+   ```bash
+   python db_loader.py
+   ```
+   *(This uses the fast PostgreSQL COPY protocol and will complete in seconds over the network.)*
+
+### 3. Push Project to GitHub
+Initialize git and push files to your repository (the `.env` credentials and `.csv` dataset will be ignored by git automatically):
+```bash
+git init
+git add .
+git commit -m "Configure cloud database & release"
+git remote add origin https://github.com/ritulshekhar/Pharma-Sales-Analytics-Dashboard.git
+git branch -M main
+git push -u origin main
+```
+
+### 4. Deploy on Streamlit Cloud
+1. Create a free account at [share.streamlit.io](https://share.streamlit.io/) linking your GitHub profile.
+2. Click **New app** and select your repository, main branch, and entry file `app.py`.
+3. Before clicking deploy, click **Advanced settings...** and paste your credentials under the **Secrets** config field in TOML layout:
+   ```toml
+   DB_HOST = "ep-your-db-host.neon.tech"
+   DB_PORT = "5432"
+   DB_USER = "neondb_owner"
+   DB_PASSWORD = "YOUR_PASSWORD"
+   DB_NAME = "neondb"
+   ```
+4. Click **Deploy!** Your app will launch at a shareable public URL.
+
